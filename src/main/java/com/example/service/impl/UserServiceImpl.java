@@ -1,5 +1,6 @@
 package com.example.service.impl;
 
+import com.example.constants.PermissionConstants;
 import com.example.mapper.UserMapper;
 import com.example.pojo.User;
 import com.example.service.UserService;
@@ -21,6 +22,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> selectList(User user) {
-        return userMapper.selectList(user);
+        List<User> userList = userMapper.selectList(user);
+        //处理映射
+        for (User userReq : userList){
+            userReq.setPermission(PermissionConstants.getPermissionDesc(userReq.getPermission()));
+        }
+        return userList;
     }
 }
