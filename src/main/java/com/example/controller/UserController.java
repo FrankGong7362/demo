@@ -28,7 +28,7 @@ public class UserController {
 
     @RequestMapping("/list")
     @CrossOrigin
-    public R<PageInfo<User>> selectList(@RequestBody User user, @RequestParam Integer pagenum, @RequestParam Integer pagesize){
+    public R<PageInfo<User>> queryUserList(@RequestBody User user, @RequestParam Integer pagenum, @RequestParam Integer pagesize){
         LambdaQueryWrapper<User> userWrapper = new LambdaQueryWrapper<>();
         if(ObjectUtils.isNotEmpty(user.getName())){
             userWrapper.like(User::getName,user.getName());
@@ -37,7 +37,7 @@ public class UserController {
             userWrapper.like(User::getTel,user.getTel());
         }
         PageHelper.startPage(pagenum,pagesize);
-        List<User> userList = userService.selectList(user);
+        List<User> userList = userService.queryUserList(user);
         PageInfo<User> pageInfo = new PageInfo<>(userList);
         return R.data(pageInfo);
     }

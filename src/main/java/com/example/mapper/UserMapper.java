@@ -8,5 +8,5 @@ public interface UserMapper {
 
     void insert(User user);
 
-    List<User> selectList(User user);
+    List<User> queryUserList(User user);
 }

@@ -21,8 +21,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> selectList(User user) {
-        List<User> userList = userMapper.selectList(user);
+    public List<User> queryUserList(User user) {
+        List<User> userList = userMapper.queryUserList(user);
         //处理映射
         for (User userReq : userList){
             userReq.setPermission(PermissionConstants.getPermissionDesc(userReq.getPermission()));

@@ -7,5 +7,5 @@ import java.util.List;
 public interface UserService {
     void insert(User user);
 
-    List<User> selectList(User user);
+    List<User> queryUserList(User user);
 }

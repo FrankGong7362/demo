@@ -4,7 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.UserMapper">
 
-    <!-- 结果映射 -->
     <resultMap id="BaseResultMap" type="com.example.pojo.User">
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
@@ -14,13 +13,12 @@
         <result column="headurl" property="headurl" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <!-- 插入用户 -->
     <insert id="insert" parameterType="com.example.pojo.User" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO users (name,tel,permission,username,password,headurl)
         VALUES (#{name}, #{tel}, #{permission}, #{username}, #{password}, #{headurl})
     </insert>
 
-    <select id="selectList"  resultMap="BaseResultMap">
+    <select id="queryUserList"  resultMap="BaseResultMap">
         SELECT * FROM
         users
         WHERE 1=1
@@ -31,4 +29,5 @@
             AND tel LIKE CONCAT('%', #{tel}, '%')
         </if>
     </select>
+
 </mapper>
