@@ -1,5 +1,6 @@
 package com.example.exception;
 
+import cn.dev33.satoken.exception.NotLoginException;
 import com.example.response.R;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,5 +30,13 @@ public class ControllerExceptionHandler {
         return R.fail(e.getMessage());
     }
 
-
+    /**
+     * 未登录异常处理
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(value = NotLoginException.class)
+    public R loginExceptionHandler(NotLoginException e) {
+        return R.fail(e.getCode(), e.getMessage());
+    }
 }

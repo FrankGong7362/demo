@@ -21,6 +21,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int deleteBatchIds(List<Integer> ids) {
+        return userMapper.deleteBatchIds(ids);
+    }
+
+    @Override
+    public int updateById(User user) {
+        return userMapper.updateById(user);
+    }
+
+    @Override
     public List<User> queryUserList(User user) {
         List<User> userList = userMapper.queryUserList(user);
         //处理映射
@@ -28,5 +38,20 @@ public class UserServiceImpl implements UserService {
             userReq.setPermission(PermissionConstants.getPermissionDesc(userReq.getPermission()));
         }
         return userList;
+    }
+
+    @Override
+    public User queryByUsername(String username) {
+        return userMapper.queryByUsername(username);
+    }
+
+    @Override
+    public User queryById(Integer id) {
+        return userMapper.queryById(id);
+    }
+
+    @Override
+    public int countByUsername(String username) {
+        return userMapper.countByUsername(username);
     }
 }

@@ -10,24 +10,65 @@
         <result column="tel" property="tel" jdbcType="VARCHAR"/>
         <result column="permission" property="permission" jdbcType="VARCHAR"/>
         <result column="username" property="username" jdbcType="VARCHAR"/>
-        <result column="headurl" property="headurl" jdbcType="VARCHAR"/>
+        <result column="headUrl" property="headUrl" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <!-- 插入用户 -->
     <insert id="insert" parameterType="com.example.pojo.User" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO users (name,tel,permission,username,password,headurl)
-        VALUES (#{name}, #{tel}, #{permission}, #{username}, #{password}, #{headurl})
+        INSERT INTO users (name,tel,permission,username,password,headUrl)
+        VALUES (#{name}, #{tel}, #{permission}, #{username}, #{password}, #{headUrl})
     </insert>
 
-    <select id="queryUserList"  resultMap="BaseResultMap">
-        SELECT * FROM
-        users
+    <!-- 根据ID删除用户 -->
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM users WHERE id = #{id}
+    </delete>
+
+    <!-- 批量删除用户 -->
+    <delete id="deleteBatchIds" parameterType="java.util.List">
+        DELETE FROM users WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 更新用户信息 -->
+    <update id="updateById" parameterType="com.example.pojo.User">
+        UPDATE users
+        <set>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="tel != null and tel != ''">tel = #{tel},</if>
+            <if test="permission != null and permission != ''">permission = #{permission},</if>
+            <if test="username != null and username != ''">username = #{username},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="headUrl != null and headUrl != ''">headUrl = #{headUrl},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!-- 查询用户列表 -->
+    <select id="queryUserList" resultMap="BaseResultMap">
+        SELECT * FROM users
         WHERE 1=1
         <if test="name != null and name != ''">
-            AND name  LIKE CONCAT('%', #{name}, '%')
+            AND name LIKE CONCAT('%', #{name}, '%')
         </if>
         <if test="tel != null and tel != ''">
             AND tel LIKE CONCAT('%', #{tel}, '%')
         </if>
+    </select>
+
+    <!-- 根据ID查询单个用户 -->
+    <select id="queryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT * FROM users WHERE id = #{id}
+    </select>
+
+    <select id="queryByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT * FROM users WHERE username = #{username}
+    </select>
+
+    <select id="countByUsername" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM users WHERE username = #{username}
     </select>
 
 </mapper>

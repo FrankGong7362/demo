@@ -14,6 +14,26 @@ public enum ResponseCode {
      */
     USERNAME_EXIST(1001, "用户名已存在"),
     /**
+     * 用户名密码错误
+     */
+    USERNAME_PASSWORD_ERROR(1002,"用户名密码错误"),
+    /**
+     * 用户名不存在
+     */
+    USERNAME_NOT_EXIST(1003,"用户名不存在"),
+    /**
+     * 验证码错误
+     */
+    CAPTCHA_ERROR(1003, "验证码错误"),
+    /**
+     * 生成验证码失败
+     */
+    CREATE_CAPTCHA_ERROR(2001, "生成验证码失败"),
+    /**
+     * sql执行失败
+     */
+    SQL_ERROR(4002, "sql执行失败"),
+    /**
      * 成功
      */
     SUCCESS(200, "操作成功！"),
@@ -21,6 +41,7 @@ public enum ResponseCode {
      * 错误
      */
     ERROR(500, "操作失败！");
+
 
     /**
      * 状态码

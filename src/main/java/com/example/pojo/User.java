@@ -11,5 +11,8 @@ public class User {
     private String permission;
     private String username;
     private String password;
-    private String headurl;
+    private String headUrl;
+    private String token;
+    private String captchaId;
+    private String captchaCode;
 }
