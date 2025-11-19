@@ -34,9 +34,9 @@ public class UserServiceImpl implements UserService {
     public List<User> queryUserList(User user) {
         List<User> userList = userMapper.queryUserList(user);
         //处理映射
-        for (User userReq : userList){
-            userReq.setPermission(PermissionConstants.getPermissionDesc(userReq.getPermission()));
-        }
+//        for (User userReq : userList){
+//            userReq.setPermission(PermissionConstants.getPermissionDesc(userReq.getPermission()));
+//        }
         return userList;
     }
 

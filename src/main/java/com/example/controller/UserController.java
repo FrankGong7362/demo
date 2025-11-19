@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
@@ -17,7 +18,9 @@ import jakarta.annotation.Resource;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user")
@@ -31,6 +34,7 @@ public class UserController {
 
     @RequestMapping("/login")
     @CrossOrigin
+    @SaIgnore
     public R login(@RequestBody User user){
         if (StringUtils.isBlank(user.getCaptchaId()) || StringUtils.isBlank(user.getCaptchaCode())) {
             return R.fail(ResponseCode.CAPTCHA_ERROR);
@@ -49,9 +53,9 @@ public class UserController {
             throw new BusinessException(ResponseCode.USERNAME_PASSWORD_ERROR);
         }
         //根据ID进行登录
-        StpUtil.login(user.getId());
-        user.setToken(StpUtil.getTokenValue()); //设置token
-        return R.data(user);
+        StpUtil.login(userInfo.getId());
+        userInfo.setToken(StpUtil.getTokenValue()); //设置token
+        return R.data(userInfo);
     }
 
     @RequestMapping("/loginOut")
@@ -64,7 +68,7 @@ public class UserController {
     @RequestMapping("/insert")
     @CrossOrigin
     @SaCheckLogin
-    public R insert(User user){
+    public R insert(@RequestBody User user){
         int count = userService.countByUsername(user.getUsername());
         if(count>0){
             throw new BusinessException(ResponseCode.USERNAME_EXIST);
@@ -82,9 +86,12 @@ public class UserController {
     @RequestMapping("/delete")
     @CrossOrigin
     @SaCheckLogin
-    public R delete(List<Integer> ids){
-        int result = userService.deleteBatchIds(ids);
-        if(result == ids.size()){
+    public R delete(String ids){
+        List<Integer> integerList = Arrays.stream(ids.split(","))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+        int result = userService.deleteBatchIds(integerList);
+        if(result > 0){
             return R.success();
         }else{
             return R.fail(ResponseCode.SQL_ERROR);
@@ -94,7 +101,7 @@ public class UserController {
     @RequestMapping("/update")
     @CrossOrigin
     @SaCheckLogin
-    public R update(User user){
+    public R update(@RequestBody User user){
         int result = userService.updateById(user);
         if(result == 1){
             return R.success();
