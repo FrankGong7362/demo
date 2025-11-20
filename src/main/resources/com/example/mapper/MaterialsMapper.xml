@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mapper.MaterialsMapper">
+
+    <!-- ResultMap 映射 -->
+    <resultMap id="BaseResultMap" type="com.example.pojo.Material">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="description" property="description"/>
+        <result column="subject" property="subject"/>
+        <result column="type" property="type"/>
+        <result column="uploader" property="uploader"/>
+        <result column="uploadTime" property="uploadTime"/>
+        <result column="downloadCount" property="downloadCount"/>
+        <result column="rating" property="rating"/>
+        <result column="reviewCount" property="reviewCount"/>
+        <result column="fileSize" property="fileSize"/>
+        <result column="filePath" property="filePath"/>
+    </resultMap>
+
+    <!-- CategoryOption ResultMap -->
+    <resultMap id="CategoryOptionResultMap" type="com.example.pojo.CategoryOption">
+        <result column="label" property="label"/>
+        <result column="value" property="value"/>
+    </resultMap>
+
+    <!-- 根据条件查询学习资料列表 -->
+    <select id="selectByConditions" parameterType="com.example.request.MaterialQueryRequest"
+            resultMap="BaseResultMap">
+        SELECT
+        id, title, description, subject, type, uploader, uploadTime,
+        downloadCount, rating, reviewCount, fileSize, filePath
+        FROM materials
+        <where>
+            <if test="subject != null and subject != ''">
+                AND subject = #{subject}
+            </if>
+            <if test="type != null and type != ''">
+                AND type = #{type}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (title LIKE CONCAT('%', #{keyword}, '%')
+                OR description LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        <choose>
+            <when test="sortBy == 'popular'">
+                ORDER BY downloadCount DESC
+            </when>
+            <when test="sortBy == 'recommended'">
+                ORDER BY rating DESC
+            </when>
+            <otherwise>
+                ORDER BY uploadTime DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 根据ID查询学习资料 -->
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+            id, title, description, subject, type, uploader, uploadTime,
+            downloadCount, rating, reviewCount, fileSize, filePath
+        FROM materials
+        WHERE id = #{id}
+    </select>
+
+    <!-- 更新下载次数 -->
+    <update id="updateDownloadCount" parameterType="java.lang.Integer">
+        UPDATE materials
+        SET downloadCount = downloadCount + 1
+        WHERE id = #{id}
+    </update>
+
+    <!-- 统计总资源数 -->
+    <select id="countTotalResources" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM materials
+    </select>
+
+    <!-- 统计学科数量 -->
+    <select id="countSubjects" resultType="java.lang.Integer">
+        SELECT COUNT(DISTINCT subject) FROM materials
+    </select>
+
+    <!-- 统计今日下载量 -->
+    <select id="countTodayDownloads" resultType="java.lang.Integer">
+        SELECT IFNULL(SUM(downloadCount), 0) FROM materials
+        WHERE DATE(uploadTime) = CURDATE()
+    </select>
+
+    <!-- 获取平均评分 -->
+    <select id="getAverageRating" resultType="java.lang.Double">
+        SELECT AVG(rating) FROM materials WHERE rating IS NOT NULL
+    </select>
+
+    <!-- 查询学科分类列表 -->
+    <select id="selectSubjectCategories" resultMap="CategoryOptionResultMap">
+        SELECT
+            label,
+            value
+        FROM constants
+        WHERE category = '1'
+          AND label IS NOT NULL
+          AND label != ''
+          AND value IS NOT NULL
+          AND value != ''
+        ORDER BY label
+    </select>
+
+    <!-- 查询资料类型列表 -->
+    <select id="selectMaterialTypes" resultMap="CategoryOptionResultMap">
+        SELECT
+            label,
+            value
+        FROM constants
+        WHERE category = '2'
+          AND label IS NOT NULL
+          AND label != ''
+          AND value IS NOT NULL
+          AND value != ''
+        ORDER BY label
+    </select>
+
+</mapper>
