@@ -63,6 +63,7 @@ public class MaterialsController {
     @CrossOrigin
     public R<Material> getMaterialDetail(@RequestBody MaterialDetailRequest request) {
         Material material = materialsService.getMaterialDetail(request.getId());
+        material.setUploader(userService.queryById(Integer.valueOf(material.getUploader())).getName());
         return R.data(material);
     }
 
